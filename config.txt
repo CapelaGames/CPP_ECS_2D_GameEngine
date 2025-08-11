@@ -1,8 +1,64 @@
-Window 1280 720
-Font fonts/tech.ttf 18 255 255 255
-Circle CGreen 100 100 -3 2 0 255 0 50
-Circle CBlue 200 200 2 4 0 0 255 100
-Circle CPurple 300 300 2 4 0 0 255 100
-Rectangle RRed 200 200 4 4 255 0 0 50 25
-Rectangle RGrey 300 250 -2 2 100 100 50 100
-Rectangle RTeal 25 100 -2 -2 0 255 255 100 100
+// liminal2D ECS game engine config
+
+// Window Settings
+//		Hori	Vert	Refresh	FullScreen
+Window	1280	720		144		1
+
+// Font Settings
+// 		Font			Size	R		G		B
+Font 	fonts/tech.ttf	18		255		255		255
+
+// Player Settings
+Player	
+// Shape Radius
+32
+// Collision Radius
+32
+// Speed
+5
+// Fill Colour
+255 255 255
+// Outline Colour
+0 0 0
+// Outline Thickness
+3
+// Vert Count
+50
+
+// Enemy Settings
+Enemy
+// Shape Radius
+32
+// Collision Radius	
+32
+// Min Max Speed
+3 3
+// Outline Colour
+255 255 255
+// Outline Thickness
+2
+// Min Max Vert Count
+3 8 
+// Small Lifespan
+90 
+// Spawn Interval
+60
+
+// Bullet Settings
+Bullet 
+// Shape Radius
+10
+// Collision Radius
+10 
+// Speed
+20 
+// Fill Colour
+255 255 255 
+// Outline Colour
+255 255 255 
+// Outline Thickness 
+2 
+// Vert Count
+20 
+// Lifespan
+90
