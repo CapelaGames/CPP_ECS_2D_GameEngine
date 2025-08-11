@@ -8,12 +8,13 @@
 
 class Shape
 {
-
   public:
+    virtual ~Shape() = default;
     std::string name;
     Float2 startingPosition;
-    Float2 startingSpeed;
+    Float2 speed;
     float colour[3];
+    float scale;
     bool draw = true;
     bool drawName = true;
     std::shared_ptr<sf::Shape> shape;

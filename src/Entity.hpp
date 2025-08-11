@@ -1,19 +1,87 @@
 #pragma once
 
-#include <cstddef>
+#include "CCollision.hpp"
+#include "CInput.hpp"
+#include "CLifeSpan.hpp"
+#include "CScore.hpp"
+#include "CShape.hpp"
+#include "CTransform.hpp"
+#include "Component.hpp"
 #include <string>
+
+class EntityManager;
+
+using ComponentTuple = std::tuple<
+    CTransform,
+    CShape,
+    CCollision,
+    CInput,
+    CScore,
+    CLifeSpan>;
 
 class Entity
 {
-    const size_t m_id = 0;
-    const std::string m_tag = "Default";
+    friend class EntityManager;
+
+    ComponentTuple m_components;
     bool m_alive = true;
+    std::string m_tag = "default";
+    size_t m_id = 0;
+
+    Entity(const size_t &id, const std::string &tag)
+        : m_tag(tag), m_id(id) {}
 
   public:
-    // std::shared_ptr<CTransform> cTransform;
-    // std::shared_ptr<CName> cName;
-    // std::shared_ptr<CShape> cShape;
-    // std::shared_ptr<CBBox> cBBox;
+    size_t id() const
+    {
+        return m_id;
+    }
 
-    Entity(const std::string &tag, size_t id);
+    bool isAlive() const
+    {
+        return m_alive;
+    }
+
+    std::string tag() const
+    {
+        return m_tag;
+    }
+
+    void destroy()
+    {
+    }
+
+    template <typename T>
+    T &get()
+    {
+        return std::get<T>(m_components);
+    }
+
+    template <typename T>
+    const T &get() const
+    {
+        return std::get<T>(m_components);
+    }
+
+    template <typename T>
+    bool has() const
+    {
+        return get<T>().exists;
+    }
+
+    template <typename T>
+    bool remove()
+    {
+        get<T>() = T();
+        return false;
+    }
+
+    template <typename T, typename... TArgs>
+    T &add(TArgs &&...mArgs)
+    {
+        auto &component = get<T>();
+        component = T(std::forward<TArgs>(mArgs)...);
+        component.exists = true;
+        return component;
+    }
 };
