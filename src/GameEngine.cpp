@@ -1,4 +1,6 @@
 #include "GameEngine.h"
+#include "CInput.hpp"
+#include "Vector2.hpp"
 #include "imgui/imgui.h"
 #include <iostream>
 
@@ -187,55 +189,101 @@ void GameEngine::sRender()
 
 void GameEngine::sUserInput()
 {
-    // TODO:
     while (auto event = m_window.pollEvent())
     {
-        ImGui::SFML::ProcessEvent(m_window, *event);
-
-        if (event->is<sf::Event::Closed>())
+        for (auto &e : m_entities.getEntities())
         {
-            m_running = false;
-        }
-
-        if (auto keyPressed = event->getIf<sf::Event::KeyPressed>())
-        {
-            switch (keyPressed->code)
-            {
-            case sf::Keyboard::Key::W:
-                std::cout << "W pressed\n";
-                break;
-            default:
-                break;
-            }
-        }
-
-        if (auto keyReleased = event->getIf<sf::Event::KeyReleased>())
-        {
-            switch (keyReleased->code)
-            {
-            case sf::Keyboard::Key::W:
-                std::cout << "W released\n";
-                break;
-            default:
-                break;
-            }
-        }
-
-        if (auto mousePressed = event->getIf<sf::Event::MouseButtonPressed>())
-        {
-            if (ImGui::GetIO().WantCaptureMouse)
+            if (!e->has<CInput>())
             {
                 continue;
             }
 
-            if (mousePressed->button == sf::Mouse::Button::Left)
+            CInput input = e->get<CInput>();
+
+            ImGui::SFML::ProcessEvent(m_window, *event);
+
+            if (event->is<sf::Event::Closed>())
             {
-                std::cout << "left pressed at " << mousePressed->position.x << " " << mousePressed->position.y << std::endl;
+                m_running = false;
             }
 
-            if (mousePressed->button == sf::Mouse::Button::Right)
+            if (auto keyPressed = event->getIf<sf::Event::KeyPressed>())
             {
-                std::cout << "right pressed at " << mousePressed->position.x << " " << mousePressed->position.y << std::endl;
+                switch (keyPressed->code)
+                {
+                case sf::Keyboard::Key::W:
+                    input.up = true;
+                    break;
+                case sf::Keyboard::Key::A:
+                    input.left = true;
+                    break;
+                case sf::Keyboard::Key::S:
+                    input.down = true;
+                    break;
+                case sf::Keyboard::Key::D:
+                    input.right = true;
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            if (auto keyReleased = event->getIf<sf::Event::KeyReleased>())
+            {
+                switch (keyReleased->code)
+                {
+                case sf::Keyboard::Key::W:
+                    input.up = false;
+                    break;
+                case sf::Keyboard::Key::A:
+                    input.left = false;
+                    break;
+                case sf::Keyboard::Key::S:
+                    input.down = false;
+                    break;
+                case sf::Keyboard::Key::D:
+                    input.right = false;
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            if (auto mousePressed = event->getIf<sf::Event::MouseButtonPressed>())
+            {
+                if (ImGui::GetIO().WantCaptureMouse)
+                {
+                    continue;
+                }
+
+                if (mousePressed->button == sf::Mouse::Button::Left)
+                {
+                    std::cout << "left pressed at " << mousePressed->position.x << " " << mousePressed->position.y << std::endl;
+                    input.shoot = true;
+                }
+
+                if (mousePressed->button == sf::Mouse::Button::Right)
+                {
+                    std::cout << "right pressed at " << mousePressed->position.x << " " << mousePressed->position.y << std::endl;
+                    input.alt = true;
+                }
+            }
+            if (auto mouseReleased = event->getIf<sf::Event::MouseButtonReleased>())
+            {
+                if (ImGui::GetIO().WantCaptureMouse)
+                {
+                    continue;
+                }
+
+                if (mouseReleased->button == sf::Mouse::Button::Left)
+                {
+                    input.shoot = false;
+                }
+
+                if (mouseReleased->button == sf::Mouse::Button::Right)
+                {
+                    input.alt = false;
+                }
             }
         }
     }
